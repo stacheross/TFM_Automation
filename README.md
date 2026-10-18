@@ -4,7 +4,7 @@
 
 Este proyecto tiene como finalidad automatizar mediante Python distintos procedimientos de análisis geoespacial desarrollados en un Trabajo de Fin de Máster en Sistemas de Información Geográfica (SIG).
 
-La investigación se centra en la delimitación de superficies potencialmente inundadas tras el paso del huracán María, ocurrido el 20 de septiembre de 2017, en el tramo bajo del río Grande de Añasco, situado entre los municipios de Añasco y Mayagüez, Puerto Rico.
+La investigación se centra en la delimitación de superficies potencialmente inundadas tras el paso del huracán María, ocurrido el 20 de septiembre de 2017, en el tramo bajo del Río Grande de Añasco, situado entre los municipios de Añasco y Mayagüez, Puerto Rico.
 
 La automatización comprende dos líneas principales de trabajo. La primera corresponde al análisis multitemporal de imágenes Sentinel-1 SAR, mediante la evaluación de cambios en la retrodispersión y la aplicación de criterios topográficos para delimitar posibles superficies inundadas. La segunda consiste en la reconstrucción de cuatro modelos de clasificación supervisada Random Forest (RF1–RF4), que incorporan progresivamente variables de teledetección y datos geoespaciales auxiliares.
 
