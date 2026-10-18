@@ -1,0 +1,75 @@
+
+# ==================================================
+# TFM AUTOMATION - GITIGNORE
+# ==================================================
+
+# Entorno virtual de Python
+.venv/
+venv/
+env/
+
+# Archivos temporales de Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Configuracion local del editor
+.vscode/
+.idea/
+
+# Datos geoespaciales originales
+data/
+
+# Resultados del procesamiento SAR y Random Forest
+outputs/
+
+# Modelos de aprendizaje automatico
+*.joblib
+*.pkl
+
+# Archivos geoespaciales pesados
+*.tif
+*.tiff
+*.img
+*.jp2
+*.vrt
+*.gpkg
+*.gdb/
+*.SAFE/
+*.dim
+*.data/
+
+# Productos comprimidos y copias de seguridad
+*.zip
+*.7z
+*.rar
+backup/
+
+# Archivos temporales de ArcGIS Pro
+*.lock
+*.sr.lock
+
+# Archivos temporales de Windows
+Thumbs.db
+Desktop.ini
+
+# Copias organizadas de los scripts originales
+# Los scripts ejecutables se conservan en scripts/
+scripts/sar_analysis/
+scripts/random_forest/
+scripts/common/
+
+# Modelo RF5 experimental, no incluido en los resultados definitivos
+scripts/align_rf5_tpi.py
+scripts/train_rf5_tpi.py
+scripts/validate_rf5_tpi.py
+
+
+# Resultados temporales de las pruebas de SNAP
+tests/snap/
