@@ -1,5 +1,7 @@
 # TFM Automation — Delimitación de inundaciones mediante Sentinel-1 SAR y Random Forest
 
+*Última actualización: 21 de octubre de 2026.*
+
 ## 1. Descripción del proyecto
 
 Este proyecto tiene como finalidad automatizar mediante Python distintos procedimientos de análisis geoespacial desarrollados en un Trabajo de Fin de Máster en Sistemas de Información Geográfica (SIG).
@@ -145,11 +147,15 @@ TFM_Automation/
 │   │   └── archived_experiments/
 │   ├── sar_analysis/
 │   └── archivos Python originales
+├── docs/
+│   └── index.html
+├── tests/
 ├── .venv/
 ├── requirements.txt
 ├── README.md
 ├── SAR_WORKFLOW.md
 ├── RANDOM_FOREST_WORKFLOW.md
+├── DEPTH_ESTIMATION_WORKFLOW.md
 └── run_random_forest.bat
 ```
 
@@ -231,3 +237,38 @@ La siguiente figura muestra la delimitación automatizada de superficies potenci
 
 Ambas composiciones fueron elaboradas en ArcGIS Pro utilizando los resultados obtenidos mediante Python.
 
+## 12. Estimación de profundidad de inundación y visor web (experimental)
+
+Como ampliación del proyecto se estimó la profundidad de la inundación. Las imágenes Sentinel-1 solo permiten delimitar la **extensión** de las superficies inundadas, por lo que la profundidad no se mide: se deriva combinando esa extensión con el Modelo Digital de Elevación (DEM) LiDAR de 0,5 m del USGS, correspondiente al producto posterior al huracán María (2018) y referido al datum vertical PRVD02.
+
+La extensión utilizada es la reconstrucción SAR obtenida mediante Python, tras descartar manualmente 69 polígonos identificados como falsos positivos, lo que deja aproximadamente **2,46 km²**. Esta extensión no equivale a la delimitación revisada del TFM original (≈ 2,31 km²) ni a la delimitación candidata sin revisar (≈ 2,7791 km²).
+
+### 12.1. Método
+
+El método estima el nivel del agua en el borde de la mancha inundada, por tramos de 250 m a lo largo del río, y calcula la profundidad como la diferencia entre ese nivel y la elevación del terreno. El nivel se obtiene como un percentil de las cotas del borde: el **p50** (mediana) y el **p90**. Se fuerza a que el nivel no aumente aguas abajo y se excluyen la franja del puente y las superficies situadas a más de 500 m del cauce. El procedimiento se ejecuta con `scripts/estimate_flood_depth_river_profile.py` y se documenta en `DEPTH_ESTIMATION_WORKFLOW.md`. Los scripts de diagnóstico y sensibilidad se encuentran en `tests/`.
+
+| Estimación | Profundidad media | Percentil 95 | Máxima | Volumen estimado |
+| ---------- | ----------------: | -----------: | -----: | ---------------: |
+| p50        |            0,45 m |       2,11 m | 5,20 m |         0,975 hm³ |
+| p90        |            1,21 m |       3,30 m | 6,94 m |         2,614 hm³ |
+
+Los valores se refieren a las 22.758 celdas de 10 m con profundidad asignada (87,3 % de la extensión revisada).
+
+### 12.2. Visor web
+
+Los resultados pueden consultarse en un visor interactivo que muestra la extensión inundada del 22 de septiembre de 2017, la profundidad estimada (p50 y p90), los nombres de barrios y núcleos urbanos, y el caudal diario de septiembre de 2017 en la estación USGS 50144000:
+
+**https://superhophop.github.io/TFM_Automation/**
+
+El visor es una página estática (`docs/index.html`) con los datos incrustados. Si se regeneran los rásteres, debe volver a generarse y publicarse. Los límites de barrios y zonas urbanas proceden de TIGER/Line 2024 del Censo de EE. UU. y son aproximados.
+
+### 12.3. Limitaciones
+
+- **La estimación no está validada.** No se dispone de marcas de agua ni de mediciones independientes de profundidad en este tramo. La estación USGS 50144000 se encuentra unos 3,6 km aguas arriba del área cartografiada, por lo que aporta contexto del evento, pero no valida las profundidades.
+- **El rango p50–p90 no es un intervalo de confianza.** Es una elección de percentil que domina la incertidumbre del resultado.
+- **Fecha de la imagen.** El nivel corresponde a la imagen del 22 de septiembre de 2017 (22:35 UTC), con el río ya en descenso, y no al pico del 20 de septiembre. Además, el DEM es posterior (2018), por lo que el cauce pudo cambiar entre ambas fechas.
+- No se modelan estructuras hidráulicas, y el DEM de suelo desnudo suele registrar la superficie del agua en los cauces.
+- Aproximadamente 0,31 km² de superficie inundada situada a más de 500 m del cauce no tiene profundidad asignada.
+- No se comparó el nivel del mapa con el del medidor en el instante de la imagen, porque no se localizaron lecturas instantáneas de esa hora.
+
+Estos resultados deben considerarse una estimación experimental y no un producto final.
